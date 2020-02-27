@@ -1364,6 +1364,7 @@ struct task_struct {
 	/* Used by LSM modules for access restriction: */
 	void				*security;
 #endif
+	int				top_app;
 
 	struct {
 		struct work_struct work;
