@@ -1,11 +1,11 @@
  /***********************************************************
  * Description : OnePlus touchpanel driver
- * 
- * File        : touchpanel_common.h      
  *
- * Function    : touchpanel public interface  
- * 
- * Version     : V1.0 
+ * File        : touchpanel_common.h
+ *
+ * Function    : touchpanel public interface
+ *
+ * Version     : V1.0
  *
  ***********************************************************/
 #ifndef _TOUCHPANEL_COMMON_H_
@@ -64,7 +64,7 @@
 #define KEY_DOUBLE_TAP              KEY_WAKEUP
 #define KEY_GESTURE_CIRCLE          250
 #define KEY_GESTURE_TWO_SWIPE       251
-#define KEY_GESTURE_DOWN_ARROW        252
+#define KEY_GESTURE_DOWN_ARROW      252
 #define KEY_GESTURE_LEFT_ARROW      253
 #define KEY_GESTURE_RIGHT_ARROW     254
 #define KEY_GESTURE_SINGLE_TAP      255
