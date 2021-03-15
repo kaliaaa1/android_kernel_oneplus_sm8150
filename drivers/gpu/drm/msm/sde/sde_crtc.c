@@ -5894,7 +5894,6 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 
     if (oneplus_dimlayer_hbm_enable && dimlayer_hbm_is_single_layer && fppressed_index == -1) {
         fppressed_index = chen_need_active_hbm_next_frame ? 1 : -1;
-        fp_index = -1;
         cstate->fingerprint_pressed = fp_mode == 1;
     }
     
@@ -5912,9 +5911,15 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		}
 
 		if (fp_index >= 0) {
-			if (zpos > pstates[fp_index].stage)
-				zpos = pstates[fp_index].stage;
-			pstates[fp_index].stage++;
+            if (!chen_need_active_hbm_next_frame || !dimlayer_hbm_is_single_layer) {
+                if (zpos > pstates[fp_index].stage)
+                    zpos = pstates[fp_index].stage;
+                pstates[fp_index].stage++;
+            } else {
+                pstates[fp_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0xff;
+                fp_index = -1;
+                pr_err("Art_Chen: Need fallback to fwb dimlayer, set fwb dimlayer alpha to 255");
+            }
 		}
 		for (i = 0; i < cnt; i++) {
 			if (i == fp_index || i == fppressed_index)
