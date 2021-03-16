@@ -5892,18 +5892,23 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		}
     }
 
-    if (oneplus_dimlayer_hbm_enable && dimlayer_hbm_is_single_layer && fppressed_index == -1) {
+    if (oneplus_dimlayer_hbm_enable && dimlayer_hbm_is_single_layer && fppressed_index == -1 && cnt > 0) {
         fppressed_index = chen_need_active_hbm_next_frame ? 1 : -1;
         cstate->fingerprint_pressed = fp_mode == 1;
     }
     
 	if (oneplus_dimlayer_hbm_enable || oneplus_force_screenfp || dim_backlight == 1) {
-		if (fp_index >= 0 && fppressed_index >= 0) {
+		if (fp_index >= 0 && fppressed_index >= 0 && !chen_need_active_hbm_next_frame) {
 			if (pstates[fp_index].stage >= pstates[fppressed_index].stage) {
 				SDE_ERROR("Bug!!@@@@: fp layer top of fppressed layer\n");
 				return -EINVAL;
 			}
-		}
+        } else if (fp_index != -1 && chen_need_active_hbm_next_frame) {
+            pstates[fp_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = oneplus_get_panel_brightness_to_alpha();
+            fp_index = -1;
+            pr_err("Art_Chen: Need fallback to fwb dimlayer, set fwb dimlayer alpha");
+        }
+        
 		if (fppressed_index >= 0) {
 			if (zpos > pstates[fppressed_index].stage)
 				zpos = pstates[fppressed_index].stage;
@@ -5916,9 +5921,9 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
                     zpos = pstates[fp_index].stage;
                 pstates[fp_index].stage++;
             } else {
-                pstates[fp_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0xff;
+                pstates[fp_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = oneplus_get_panel_brightness_to_alpha();
                 fp_index = -1;
-                pr_err("Art_Chen: Need fallback to fwb dimlayer, set fwb dimlayer alpha to 255");
+                pr_err("Art_Chen: Need fallback to fwb dimlayer, set fwb dimlayer alpha");
             }
 		}
 		for (i = 0; i < cnt; i++) {
@@ -5941,16 +5946,11 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 			cstate->fingerprint_mode = true;
 		else
 			cstate->fingerprint_mode = false;
-
-		if (fppressed_index >= 0) {
-			pstates[fppressed_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0xff;
-		}
 		
 		if (fp_index >= 0) {
 			pstates[fp_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0;
 		}
 
-		
 		if (sde_crtc_config_fingerprint_dim_layer(&cstate->base, zpos)) {
 			//SDE_DEBUG("Failed to config dim layer\n");
 			return -EINVAL;
