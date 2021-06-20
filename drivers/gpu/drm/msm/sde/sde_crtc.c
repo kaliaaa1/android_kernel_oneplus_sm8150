@@ -5836,12 +5836,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
         return 0;
 	}
 
-	if (oneplus_dimlayer_hbm_enable) {
-		if (!is_exist_fp_icon)
-			is_exist_fp_icon = fp_index >= 0;
-	} else {
-		is_exist_fp_icon = fp_index >= 0;
-	}
+	is_exist_fp_icon = fp_index >= 0;
 
 	dimlayer_hbm_is_single_layer = cnt == 2 ? 1 : 0;
 	
@@ -5886,6 +5881,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 					fppressed_index = i;
 				}
 			}
+		pr_err("Art_Chen: Force Top Layer set fppressed_index %d", fppressed_index);
         } else {
         	fppressed_index = chen_need_active_hbm_next_frame ? 1 : -1;
         }
