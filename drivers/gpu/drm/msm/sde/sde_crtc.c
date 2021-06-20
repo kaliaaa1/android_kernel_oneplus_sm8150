@@ -5845,7 +5845,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		else if (fp_mode == 1)
 			is_exist_fp_icon = fp_index >= 0 && fppressed_index >= 0;
 	} else {
-		is_exist_fp_icon = false;
+		is_exist_fp_icon = fp_index >= 0;
 	}
 
 	dimlayer_hbm_is_single_layer = cnt == 2 ? 1 : 0;
