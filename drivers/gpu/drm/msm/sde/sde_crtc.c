@@ -3658,9 +3658,6 @@ static int sde_crtc_config_fingerprint_dim_layer(struct drm_crtc_state *crtc_sta
 		return 0;
 	}
 
-	if (chen_need_active_hbm_next_frame)
-		alpha = 0; // without dimlayer
-
 	if ((stage + SDE_STAGE_0) >= kms->catalog->mixer[0].sblk->maxblendstages) {
 		return -EINVAL;
 	}
