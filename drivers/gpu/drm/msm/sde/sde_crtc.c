@@ -5837,10 +5837,8 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 	}
 
 	if (oneplus_dimlayer_hbm_enable) {
-		if (!is_exist_fp_icon && !fp_mode)
+		if (!is_exist_fp_icon)
 			is_exist_fp_icon = fp_index >= 0;
-		else if (fp_mode == 1)
-			is_exist_fp_icon = fp_index >= 0 && fppressed_index >= 0;
 	} else {
 		is_exist_fp_icon = fp_index >= 0;
 	}
@@ -5941,7 +5939,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 			return -EINVAL;
 		}
 		if (!chen_need_active_hbm_next_frame || !dimlayer_hbm_is_single_layer) {
-			if (fppressed_index >= 0)
+			if (fppressed_index >= 0 || (fp_index >= 0 && fp_mode == 1))
 				cstate->fingerprint_pressed = true;
 			else
 				cstate->fingerprint_pressed = false;
