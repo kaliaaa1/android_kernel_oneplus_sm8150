@@ -1363,6 +1363,7 @@ static struct attribute *connector_dev_attrs[] = {
 	&dev_attr_dimlayer_hbm_is_single_layer.attr,
 	&dev_attr_chen_need_hbm_next_frame.attr,
 	&dev_attr_power_status.attr,
+	&dev_attr_is_exist_fp_icon.attr,
 	NULL
 };
 
