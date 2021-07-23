@@ -5846,7 +5846,8 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		is_exist_fp_icon = false;
 	}
 
-	dimlayer_hbm_is_single_layer = (cnt == 2 || (!is_exist_fp_icon && oneplus_dimlayer_hbm_enable)) ? 1 : 0;
+	//dimlayer_hbm_is_single_layer = (cnt == 2 || (!is_exist_fp_icon && oneplus_dimlayer_hbm_enable)) ? 1 : 0;
+	dimlayer_hbm_is_single_layer = cnt == 2;
 	
 	if (fppressed_index >= 0 || fp_index >= 0)
 		pr_err("Art_Chen: Check Fingerprint layer, reason: fp_index is %d, fppressed_index is %d aod_index is %d\n", fp_index, fppressed_index, aod_index);
@@ -5882,12 +5883,16 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 
 	if (oneplus_dimlayer_hbm_enable && fppressed_index == -1 && cnt > 0) {
         if (chen_need_active_hbm_next_frame) {
-			int tempZPos = 0;
-			for (i = 0; i < cnt; i++) {
-				if (pstates[i].stage > tempZPos) {
-					tempZPos = pstates[i].stage;
-					fppressed_index = i;
+            if (!dimlayer_hbm_is_single_layer) {
+				int tempZPos = 0;
+				for (i = 0; i < cnt; i++) {
+					if (pstates[i].stage > tempZPos) {
+						tempZPos = pstates[i].stage;
+						fppressed_index = i;
+					}
 				}
+			} else {
+				fppressed_index = 1;
 			}
             cstate->fingerprint_pressed = fp_mode == 1;
         }
