@@ -4666,7 +4666,7 @@ int dsi_panel_set_lp1(struct dsi_panel *panel)
 		       panel->name, rc);
 
 	panel->need_power_on_backlight = true;
-	chen_power_status = 1; //DISPLAY_POWER_DOZE
+	chen_power_status = 3; //DISPLAY_POWER_DOZE
 exit:
 	mutex_unlock(&panel->panel_lock);
 	return rc;
@@ -5219,7 +5219,7 @@ int dsi_panel_disable(struct dsi_panel *panel)
 	panel->panel_initialized = false;
 	panel->power_mode = SDE_MODE_DPMS_OFF;
 
-	chen_power_status = 0; //OPPO_DISPLAY_POWER_ON
+	chen_power_status = 0; //DISPLAY_POWER_OFF
 	mutex_unlock(&panel->panel_lock);
 	printk(KERN_ERR"dsi_panel_disable --\n");
 	return rc;
