@@ -5880,6 +5880,16 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 			}
 		}
     }
+	
+	// Hide Icon when non-pressed down for ColorOS && H2OS
+    if (fppressed_index >= 0) {
+	    if (fp_mode == 0) {
+        	pstates[fppressed_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0x0;
+			fppressed_index = -1;
+		} else {
+		    pstates[fppressed_index].sde_pstate->property_values[PLANE_PROP_ALPHA].value = 0xff;
+		}
+	}
 
 	if (oneplus_dimlayer_hbm_enable && fppressed_index == -1 && cnt > 0) {
         if (chen_need_active_hbm_next_frame) {
