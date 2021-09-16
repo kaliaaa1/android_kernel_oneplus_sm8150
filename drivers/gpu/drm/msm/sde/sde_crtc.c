@@ -3545,6 +3545,7 @@ ssize_t oneplus_display_notify_fp_press(struct device *dev,
 }
 extern int aod_layer_hide;
 extern bool HBM_flag;
+extern int chen_power_status;
 int oneplus_dim_status = 0;
 int oneplus_aod_fod = 0;
 int oneplus_aod_dc = 0;
@@ -3577,6 +3578,10 @@ ssize_t oneplus_display_notify_dim(struct device *dev,
 	dsi_connector = dsi_display->drm_conn;
 	mode_config = &drm_dev->mode_config;
 	sscanf(buf, "%du", &dim_status);
+	if (dim_status != 0 && chen_power_status == 0) {
+		pr_err("Art_Chen hack: screen is not on, for prevent layer issue, just keep the last settings before panel enable");
+		dim_status = 0;
+	}
 
 	if (dsi_display->panel->aod_status == 0 && (dim_status == 2)) {
 		pr_err("fp set it in normal status\n");
@@ -5798,8 +5803,10 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 	}
 
     aod_mode = oneplus_aod_hid;
-	if (oneplus_dim_status == 5 && display->panel->aod_status == 0)
+	if (oneplus_dim_status == 5 && display->panel->aod_status == 0) {
 		dim_mode = 0;
+		oneplus_dimlayer_hbm_enable = false;
+	}
 
 	for (i = 0; i < cnt; i++) {
 		mode = sde_plane_check_fingerprint_layer(pstates[i].drm_pstate);
