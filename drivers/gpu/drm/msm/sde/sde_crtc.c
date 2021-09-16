@@ -5969,7 +5969,7 @@ static int sde_crtc_onscreenfinger_atomic_check(struct sde_crtc_state *cstate,
 		cstate->fingerprint_mode = false;
     }
 
-	if (fp_mode == 1 && !oneplus_dimlayer_hbm_enable) {
+	if (fp_mode == 1 && !oneplus_dimlayer_hbm_enable && fppressed_index < 0) {
 		cstate->fingerprint_mode = true;
 		cstate->fingerprint_pressed = true;
 		return 0;
