@@ -1269,6 +1269,13 @@ extern  ssize_t oneplus_display_notify_fp_press(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t count);
 
+extern bool oneplus_dimlayer_hbm_enable;
+static ssize_t oneplus_display_get_notify_dim(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "%d\n", oneplus_dimlayer_hbm_enable);
+}
+
 extern  ssize_t oneplus_display_notify_dim(struct device *dev,
 		struct device_attribute *attr,
 		const char *buf, size_t count);
@@ -1307,7 +1314,7 @@ static DEVICE_ATTR_RO(dynamic_fps);
 static DEVICE_ATTR(dim_alpha, S_IRUGO|S_IWUSR, oneplus_display_get_dim_alpha, oneplus_display_set_dim_alpha);
 static DEVICE_ATTR(force_screenfp, S_IRUGO|S_IWUSR, oneplus_display_get_forcescreenfp, oneplus_display_set_forcescreenfp);
 static DEVICE_ATTR(notify_fppress, S_IRUGO|S_IWUSR, NULL, oneplus_display_notify_fp_press);
-static DEVICE_ATTR(notify_dim, S_IRUGO|S_IWUSR, NULL, oneplus_display_notify_dim);
+static DEVICE_ATTR(notify_dim, S_IRUGO|S_IWUSR, oneplus_display_get_notify_dim, oneplus_display_notify_dim);
 static DEVICE_ATTR(notify_aod, S_IRUGO|S_IWUSR, NULL, oneplus_display_notify_aod_hid);
 static DEVICE_ATTR(dimlayer_bl_en, S_IRUGO|S_IWUSR, op_display_get_dimlayer_enable, op_display_set_dimlayer_enable);
 static DEVICE_ATTR(dp_en, S_IRUGO|S_IWUSR, op_display_get_dp_enable, op_display_set_dp_enable);
