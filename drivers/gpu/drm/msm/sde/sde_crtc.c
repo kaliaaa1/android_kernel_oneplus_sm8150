@@ -3531,14 +3531,19 @@ ssize_t oneplus_display_notify_fp_press(struct device *dev,
 	state->acquire_ctx = mode_config->acquire_ctx;
 	crtc = dsi_connector->state->crtc;
 	crtc_state = drm_atomic_get_crtc_state(state, crtc);
+	err = drm_atomic_commit(state);
+	if (err < 0) {
+		drm_atomic_state_put(state);
+		state = NULL;
+	}
 	priv = drm_dev->dev_private;
 	now = ktime_get();
 	need_commit = (((now- priv->commit_end_time) > 20000000 ? true:false)&&dsi_display->panel->aod_status==0);
-	if (need_commit) {
+	/*if (need_commit) {
 		err = drm_atomic_commit(state);
 		if (err < 0)
 			drm_atomic_state_clear(state);
-	}
+	}*/
 	drm_modeset_unlock_all(drm_dev);
 	SDE_ATRACE_END("oneplus_display_notify_fp_press");
 	return count;
@@ -3606,6 +3611,7 @@ ssize_t oneplus_display_notify_dim(struct device *dev,
 		pr_err("notify dim not commit");
 		return count;
 	}
+	/*
 	drm_modeset_lock_all(drm_dev);
 
 	state = drm_atomic_state_alloc(drm_dev);
@@ -3619,6 +3625,7 @@ ssize_t oneplus_display_notify_dim(struct device *dev,
 			drm_atomic_state_clear(state);
 	}
 	drm_modeset_unlock_all(drm_dev);
+	*/
 	SDE_ATRACE_END("oneplus_display_notify_dim");
 	return count;
 }
